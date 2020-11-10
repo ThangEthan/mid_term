@@ -17,11 +17,11 @@ Term::Term(){}
 Term::Term(string t)
 {
     string parse;
-    while (!isalpha(t[0]))
+    while (!isalpha(t[0]))  //until encounter first variable
     {
         parse += t[0];
         t.erase(0,1);
-        if (t == "")
+        if (t == "")    //in case term has no variable
             break;
     }
     if (parse == "" || parse == "+")
@@ -36,25 +36,25 @@ Term::Term(string t)
     {
         this->constant = stoi(parse);
     }
+    /* parsing variable and its power */
     parse = "";
     for (int i = 0; i < t.size(); i++)
     {
         if (isalpha(t[i]))
         {
             this->var.push_back(t[i]);
-            if (t[i+1] == '^')
+            if (t[i+1] == '^')  //check if the variable has power
             {
                 continue;
             }
             else
             {
-                this->power.push_back(1);
+                this->power.push_back(1); //else power of 1
             }
         }
         else if (isnumber(t[i]))
         {
-            
-            this->power.push_back(t[i]-'0');
+            this->power.push_back(t[i]-'0');    //acsii code
         }
     }
 }
@@ -83,19 +83,19 @@ Term operator * (Term const &t1, Term const &t2)
     new_var.insert(new_var.end(), t2.var.begin(), t2.var.end());
     new_power.insert(new_power.end(), t1.power.begin(), t1.power.end());
     new_power.insert(new_power.end(), t2.power.begin(), t2.power.end());
-    
-    for (int i = 0; i < new_var.size(); i++)
+    /* Find common variable and add their power together */
+    for (int i = 0; i < new_var.size(); i++)    
     {
         for (int j = i+1; j < new_var.size(); j++)
         {
-            if (new_var[i] == new_var[j])
+            if (new_var[i] == new_var[j])   //found common var
             {
                 simplified_var.push_back(new_var[i]);
-                simplified_power.push_back(new_power[i] + new_power[j]);
-                common_var.push_back(new_var[i]);
+                simplified_power.push_back(new_power[i] + new_power[j]);    //add their power
+                common_var.push_back(new_var[i]);   //save found common var
             }
         }
-        if (find(common_var.begin(), common_var.end(), new_var[i]) == common_var.end())
+        if (find(common_var.begin(), common_var.end(), new_var[i]) == common_var.end())     //avoid common var
         {
             simplified_var.push_back(new_var[i]);
             simplified_power.push_back(new_power[i]);
@@ -115,7 +115,7 @@ int Term::evaluate(vector<char> var, vector<int> varVal) const
     int result = this->constant;
     for (int i = 0; i < this->var.size(); i++)
     {
-        result *= pow(varVal[distance(var.begin(), find(var.begin(), var.end(), this->var[i]))], this->power[i]);
+        result *= pow(varVal[distance(var.begin(), find(var.begin(), var.end(), this->var[i]))], this->power[i]);   //find the variable's value in given vector
     }
     return result;
 }

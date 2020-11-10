@@ -11,7 +11,7 @@
 using namespace std;
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
+
     Polynomial f1("f1");
     Polynomial f2("f2");
     Polynomial f3 = f1 * f2;

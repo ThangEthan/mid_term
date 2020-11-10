@@ -22,10 +22,9 @@ Polynomial::Polynomial(string name)
     cout << this->name << ": ";
     /* use system call to make terminal send all keystrokes directly to stdin */
     system("/bin/stty raw");
-    while ((c = getchar()) != '.')
+    while ((c = getchar()) != '.')  //type a period to break out of the loop
     {
-        /* type a period to break out of the loop, since CTRL-D won't work raw */
-        if (c == '^')
+        if (c == '^')   //next number will be superscript
         {
             f_r += '^';
             switch ((c = getchar()))
@@ -82,7 +81,7 @@ Polynomial::Polynomial(string name)
                 break;
             }
         }
-        else if (c == '`')
+        else if (c == '`')  //delete
         {
             f.pop_back();
             f_r.pop_back();
@@ -102,6 +101,7 @@ Polynomial::Polynomial(string name)
             cout << this->name << ": " << f;
         }
     }
+    /* split polynomial into terms */
     string term;
     for (int i = 0; i < f_r.size(); i++)
     {
@@ -113,7 +113,7 @@ Polynomial::Polynomial(string name)
         {
             t.push_back(Term(term));
             term = "";
-            term += f_r[i];
+            term += f_r[i]; //math operator of the next term
         }
     }
     t.push_back(Term(term));
@@ -201,17 +201,17 @@ ostream &operator<<(ostream &out, const Polynomial &f)
 int Polynomial::evaluate()
 {
     vector<int> varValue;
-    vector<char> var;
+    vector<char> var;   //hold distinct var in the polynomial
     int num;
     int result=0;
     for (int i = 0; i < this->t.size(); i++)
     {
         for (int j = 0; j < t[i].getVar().size(); j++)
         {
-            if (find(var.begin(), var.end(), t[i].getVar()[j]) == var.end())
+            if (find(var.begin(), var.end(), t[i].getVar()[j]) == var.end())    //found a distinct var
             {
                 var.push_back(t[i].getVar()[j]);
-                cout << t[i].getVar()[j] << " = ";
+                cout << t[i].getVar()[j] << " = ";  //ask for its value
                 cin >> num;
                 varValue.push_back(num);
             }
@@ -219,7 +219,7 @@ int Polynomial::evaluate()
     }
     for (int i = 0; i < this->t.size(); i++)
     {
-        result += t[i].evaluate(var, varValue);
+        result += t[i].evaluate(var, varValue); //pass it to each term
     }
     return result;
 }
