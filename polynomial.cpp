@@ -22,9 +22,9 @@ Polynomial::Polynomial(string name)
     cout << this->name << ": ";
     /* use system call to make terminal send all keystrokes directly to stdin */
     system("/bin/stty raw");
-    while ((c = getchar()) != '.')  //type a period to break out of the loop
+    while ((c = getchar()) != '.') //type a period to break out of the loop
     {
-        if (c == '^')   //next number will be superscript
+        if (c == '^') //next number will be superscript
         {
             f_r += '^';
             switch ((c = getchar()))
@@ -81,15 +81,10 @@ Polynomial::Polynomial(string name)
                 break;
             }
         }
-        else if (c == '`')  //delete
+        else if (c == '`') //delete
         {
             f.pop_back();
             f_r.pop_back();
-            if (f.back() == '\\')
-            {
-                f.pop_back();
-                f_r.pop_back();
-            }
             system("clear");
             cout << this->name << ": " << f;
         }
@@ -102,21 +97,32 @@ Polynomial::Polynomial(string name)
         }
     }
     /* split polynomial into terms */
+    string deli = ";";
+    string f_d;
     string term;
+    size_t pos = 0;
     for (int i = 0; i < f_r.size(); i++)
     {
         if (f_r[i] != '+' && f_r[i] != '-')
         {
-            term += f_r[i];
+            f_d += f_r[i];
         }
         else
         {
-            t.push_back(Term(term));
-            term = "";
-            term += f_r[i]; //math operator of the next term
+            f_d += deli;
+            f_d += f_r[i];
         }
     }
-    t.push_back(Term(term));
+    f_d += deli;
+    while ((pos = f_d.find(";")) != string::npos)
+    {
+        term = f_d.substr(0, pos);
+        if (term != "")
+        {
+            t.push_back(Term(term));
+        }
+        f_d.erase(0, pos + deli.length());
+    }
     system("clear");
     /* use system call to set terminal behaviour to more normal behaviour */
     system("/bin/stty cooked");
@@ -138,29 +144,65 @@ Polynomial operator*(Polynomial const &f1, Polynomial const &f2)
             new_terms.push_back(f1.t[i] * f2.t[j]);
         }
     }
-    Polynomial new_polynomial(new_terms);
-    return new_polynomial;
+    return Polynomial(new_terms);
 }
 
 ostream &operator<<(ostream &out, const Polynomial &f)
 {
-    int count = 0;
     for (int i = 0; i < f.t.size(); i++)
     {
-        if (f.t[i].getConstant() < 0)
+        int c = f.t[i].getConstant();
+        if (!f.t[i].getVar().empty())
         {
-            out << f.t[i].getConstant();
-        }
-        else if (f.t[i].getConstant() > 0 && count != 0)
-        {
-            out << "+" << f.t[i].getConstant(); 
-        }
-        else
-        {
-            out << f.t[i].getConstant();
-            count = 1; 
-        }
 
+            if (c > 0)
+            {
+                if (c != 1 && i == 0)
+                {
+                    cout << c;
+                }
+                else
+                {
+                    if (c == 1)
+                    {
+                        cout << "+";
+                    }
+                    else
+                    {
+                        cout << "+" << c;
+                    }
+                }
+            }
+            else
+            {
+                if (c == -1)
+                {
+                    out << "-";
+                }
+                else
+                {
+                    out << c;
+                }
+            }
+        }
+        else 
+        {
+            if (c > 0)
+            {
+                if (i == 0)
+                {
+                    cout << c;
+                }
+                else
+                {
+                    cout << "+" << c;
+                }
+            }
+            else
+            {
+                cout << c;
+            }
+        }
         for (int j = 0; j < f.t[i].getVar().size(); j++)
         {
             out << f.t[i].getVar()[j];
@@ -201,17 +243,17 @@ ostream &operator<<(ostream &out, const Polynomial &f)
 int Polynomial::evaluate()
 {
     vector<int> varValue;
-    vector<char> var;   //hold distinct var in the polynomial
+    vector<char> var; //hold distinct var in the polynomial
     int num;
-    int result=0;
+    int result = 0;
     for (int i = 0; i < this->t.size(); i++)
     {
         for (int j = 0; j < t[i].getVar().size(); j++)
         {
-            if (find(var.begin(), var.end(), t[i].getVar()[j]) == var.end())    //found a distinct var
+            if (find(var.begin(), var.end(), t[i].getVar()[j]) == var.end()) //found a distinct var
             {
                 var.push_back(t[i].getVar()[j]);
-                cout << t[i].getVar()[j] << " = ";  //ask for its value
+                cout << t[i].getVar()[j] << " = "; //ask for its value
                 cin >> num;
                 varValue.push_back(num);
             }

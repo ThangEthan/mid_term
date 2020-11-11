@@ -101,8 +101,7 @@ Term operator * (Term const &t1, Term const &t2)
             simplified_power.push_back(new_power[i]);
         }
     }
-    Term new_term(new_constant, simplified_var, simplified_power);
-    return new_term;
+    return Term(new_constant, simplified_var, simplified_power);
 }
 
 int Term::getConstant() const
