@@ -23,7 +23,7 @@ class Polynomial
         string f; // displaying readable format
         string f_r; // raw input
         char c;
-        vector<Term> t;
+        vector<Term> terms;
     public:
         Polynomial();
         Polynomial(string name);

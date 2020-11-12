@@ -18,16 +18,18 @@ class Term
 {
     private:
         int constant;
-        vector<char> var;
-        vector<int> power;
+        vector<char> vars;
+        vector<int> powers;
     public:
         Term();
         Term(string t);
-        Term(int cons, vector<char> v, vector<int> p);
+        Term(int con, vector<char> vs, vector<int> ps);
         int getConstant() const;
-        int evaluate(vector<char> var, vector<int> varVal) const;
+        int evaluate(vector<char> vars, vector<int> varVals) const;
+        bool simplifiable(Term const &);
         vector<char> getVar() const;
         vector<int> getPower() const;
+        Term simplify(Term const &);
         friend Term operator * (Term const &, Term const &);
 };
 

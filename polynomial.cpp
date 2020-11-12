@@ -88,7 +88,7 @@ Polynomial::Polynomial(string name)
             system("clear");
             cout << this->name << ": " << f;
         }
-        else
+        else if (isalpha(c) || isdigit(c) || c == '-' || c == '+')
         {
             f += c;
             f_r += c;
@@ -119,7 +119,7 @@ Polynomial::Polynomial(string name)
         term = f_d.substr(0, pos);
         if (term != "")
         {
-            t.push_back(Term(term));
+            this->terms.push_back(Term(term));
         }
         f_d.erase(0, pos + deli.length());
     }
@@ -130,29 +130,55 @@ Polynomial::Polynomial(string name)
 
 Polynomial::Polynomial(vector<Term> ts)
 {
-    this->t.reserve(ts.size());
-    this->t.insert(t.end(), ts.begin(), ts.end());
+    this->terms.reserve(ts.size());
+    this->terms.insert(terms.end(), ts.begin(), ts.end());
 }
 
 Polynomial operator*(Polynomial const &f1, Polynomial const &f2)
 {
     vector<Term> new_terms;
-    for (int i = 0; i < f1.t.size(); i++)
+    vector<Term> new_simplifiedd_terms;
+    vector<int> index;
+    Term temp;
+    for (int i = 0; i < f1.terms.size(); i++)
     {
-        for (int j = 0; j < f2.t.size(); j++)
+        for (int j = 0; j < f2.terms.size(); j++)
         {
-            new_terms.push_back(f1.t[i] * f2.t[j]);
+            new_terms.push_back(f1.terms[i] * f2.terms[j]);
         }
     }
-    return Polynomial(new_terms);
+    for (int i = 0; i < new_terms.size(); i++)
+    {
+        if (find(index.begin(), index.end(), i) != index.end())
+        {
+            continue; 
+        }
+        else
+        {
+            temp = new_terms[i];
+        }
+        for (int j = i + 1; j < new_terms.size(); j++)
+        {
+            if (new_terms[i].simplifiable(new_terms[j]))
+            {
+                index.push_back(j);
+                temp = temp.simplify(new_terms[j]);
+            }
+        }
+        if (temp.getConstant() != 0)
+        {
+            new_simplifiedd_terms.push_back(temp);
+        }
+    }
+    return Polynomial(new_simplifiedd_terms);
 }
 
 ostream &operator<<(ostream &out, const Polynomial &f)
 {
-    for (int i = 0; i < f.t.size(); i++)
+    for (int i = 0; i < f.terms.size(); i++)
     {
-        int c = f.t[i].getConstant();
-        if (!f.t[i].getVar().empty())
+        int c = f.terms[i].getConstant();
+        if (!f.terms[i].getVar().empty())
         {
 
             if (c > 0)
@@ -165,7 +191,11 @@ ostream &operator<<(ostream &out, const Polynomial &f)
                 {
                     if (c == 1)
                     {
-                        cout << "+";
+                        if (i == 0){}
+                        else
+                        {
+                            cout << "+";
+                        }
                     }
                     else
                     {
@@ -203,10 +233,11 @@ ostream &operator<<(ostream &out, const Polynomial &f)
                 cout << c;
             }
         }
-        for (int j = 0; j < f.t[i].getVar().size(); j++)
+
+        for (int j = 0; j < f.terms[i].getVar().size(); j++)
         {
-            out << f.t[i].getVar()[j];
-            switch (f.t[i].getPower()[j])
+            out << f.terms[i].getVar()[j];
+            switch (f.terms[i].getPower()[j])
             {
             case 2:
                 out << "\u00B2";
@@ -242,26 +273,26 @@ ostream &operator<<(ostream &out, const Polynomial &f)
 
 int Polynomial::evaluate()
 {
-    vector<int> varValue;
-    vector<char> var; //hold distinct var in the polynomial
+    vector<char> vars; //hold distinct var in the polynomial
+    vector<int> varVals;
     int num;
     int result = 0;
-    for (int i = 0; i < this->t.size(); i++)
+    for (int i = 0; i < this->terms.size(); i++)
     {
-        for (int j = 0; j < t[i].getVar().size(); j++)
+        for (int j = 0; j < this->terms[i].getVar().size(); j++)
         {
-            if (find(var.begin(), var.end(), t[i].getVar()[j]) == var.end()) //found a distinct var
+            if (find(vars.begin(), vars.end(), this->terms[i].getVar()[j]) == vars.end()) //found a distinct var
             {
-                var.push_back(t[i].getVar()[j]);
-                cout << t[i].getVar()[j] << " = "; //ask for its value
+                vars.push_back(this->terms[i].getVar()[j]);
+                cout << this->terms[i].getVar()[j] << " = "; //ask for its value
                 cin >> num;
-                varValue.push_back(num);
+                varVals.push_back(num);
             }
         }
     }
-    for (int i = 0; i < this->t.size(); i++)
+    for (int i = 0; i < this->terms.size(); i++)
     {
-        result += t[i].evaluate(var, varValue); //pass it to each term
+        result += this->terms[i].evaluate(vars, varVals); //pass it to each term
     }
     return result;
 }
