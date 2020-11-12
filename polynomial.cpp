@@ -101,7 +101,7 @@ Polynomial::Polynomial(string name)
     string f_d;
     string term;
     size_t pos = 0;
-    for (int i = 0; i < f_r.size(); i++)
+    for (size_t i = 0; i < f_r.size(); i++)
     {
         if (f_r[i] != '+' && f_r[i] != '-')
         {
@@ -140,14 +140,14 @@ Polynomial operator*(Polynomial const &f1, Polynomial const &f2)
     vector<Term> new_simplifiedd_terms;
     vector<int> index;
     Term temp;
-    for (int i = 0; i < f1.terms.size(); i++)
+    for (size_t i = 0; i < f1.terms.size(); i++)
     {
-        for (int j = 0; j < f2.terms.size(); j++)
+        for (size_t j = 0; j < f2.terms.size(); j++)
         {
             new_terms.push_back(f1.terms[i] * f2.terms[j]);
         }
     }
-    for (int i = 0; i < new_terms.size(); i++)
+    for (size_t i = 0; i < new_terms.size(); i++)
     {
         if (find(index.begin(), index.end(), i) != index.end())
         {
@@ -157,7 +157,7 @@ Polynomial operator*(Polynomial const &f1, Polynomial const &f2)
         {
             temp = new_terms[i];
         }
-        for (int j = i + 1; j < new_terms.size(); j++)
+        for (size_t j = i + 1; j < new_terms.size(); j++)
         {
             if (new_terms[i].simplifiable(new_terms[j]))
             {
@@ -175,7 +175,7 @@ Polynomial operator*(Polynomial const &f1, Polynomial const &f2)
 
 ostream &operator<<(ostream &out, const Polynomial &f)
 {
-    for (int i = 0; i < f.terms.size(); i++)
+    for (size_t i = 0; i < f.terms.size(); i++)
     {
         int c = f.terms[i].getConstant();
         if (!f.terms[i].getVar().empty())
@@ -234,7 +234,7 @@ ostream &operator<<(ostream &out, const Polynomial &f)
             }
         }
 
-        for (int j = 0; j < f.terms[i].getVar().size(); j++)
+        for (size_t j = 0; j < f.terms[i].getVar().size(); j++)
         {
             out << f.terms[i].getVar()[j];
             switch (f.terms[i].getPower()[j])
@@ -277,9 +277,9 @@ int Polynomial::evaluate()
     vector<int> varVals;
     int num;
     int result = 0;
-    for (int i = 0; i < this->terms.size(); i++)
+    for (size_t i = 0; i < this->terms.size(); i++)
     {
-        for (int j = 0; j < this->terms[i].getVar().size(); j++)
+        for (size_t j = 0; j < this->terms[i].getVar().size(); j++)
         {
             if (find(vars.begin(), vars.end(), this->terms[i].getVar()[j]) == vars.end()) //found a distinct var
             {
@@ -290,7 +290,7 @@ int Polynomial::evaluate()
             }
         }
     }
-    for (int i = 0; i < this->terms.size(); i++)
+    for (size_t i = 0; i < this->terms.size(); i++)
     {
         result += this->terms[i].evaluate(vars, varVals); //pass it to each term
     }

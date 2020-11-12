@@ -39,7 +39,7 @@ Term::Term(string t)
     }
     /* parsing variable and its power */
     parse = "";
-    for (int i = 0; i < t.size(); i++)
+    for (size_t i = 0; i < t.size(); i++)
     {
         if (isalpha(t[i]))
         {
@@ -118,9 +118,9 @@ Term operator*(Term const &t1, Term const &t2)
     new_power.insert(new_power.end(), t1.powers.begin(), t1.powers.end());
     new_power.insert(new_power.end(), t2.powers.begin(), t2.powers.end());
     /* Find common variable and add their power together */
-    for (int i = 0; i < new_var.size(); i++)
+    for (size_t i = 0; i < new_var.size(); i++)
     {
-        for (int j = i + 1; j < new_var.size(); j++)
+        for (size_t j = i + 1; j < new_var.size(); j++)
         {
             if (new_var[i] == new_var[j]) //found common var
             {
@@ -146,7 +146,7 @@ int Term::getConstant() const
 int Term::evaluate(vector<char> var, vector<int> varVal) const
 {
     int result = this->constant;
-    for (int i = 0; i < this->vars.size(); i++)
+    for (size_t i = 0; i < this->vars.size(); i++)
     {
         result *= pow(varVal[distance(var.begin(), find(var.begin(), var.end(), this->vars[i]))], this->powers[i]); //find the variable's value in given vector
     }
