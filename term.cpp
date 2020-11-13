@@ -58,6 +58,7 @@ Term::Term(string t)
             this->powers.push_back(t[i] - '0'); //acsii code
         }
     }
+    orderVariable();
 }
 
 Term::Term(int con, vector<char> vs, vector<int> ps)
@@ -67,6 +68,7 @@ Term::Term(int con, vector<char> vs, vector<int> ps)
     this->vars.insert(this->vars.end(), vs.begin(), vs.end());
     this->powers.reserve(ps.size());
     this->powers.insert(this->powers.end(), ps.begin(), ps.end());
+    orderVariable();
 }
 bool Term::simplifiable(Term const &t2)
 {
@@ -94,6 +96,19 @@ bool Term::simplifiable(Term const &t2)
         return t1Zipped == t2Zipped ? true : false;
     }
 }
+
+void Term::orderVariable()
+{
+    vector<pair<char,int> > zipped;
+    zip(this->vars, this->powers, zipped);
+    sort(begin(zipped), end(zipped), [&](const auto& a, const auto& b)
+        {
+            return a.first < b.first;
+        }
+    );
+    unzip(zipped, this->vars, this->powers);
+}
+
 Term Term::simplify(Term const &t2)
 {
     int con = this->constant + t2.getConstant();

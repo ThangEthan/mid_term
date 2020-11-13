@@ -27,6 +27,7 @@ class Term
         int getConstant() const;
         int evaluate(vector<char> vars, vector<int> varVals) const;
         bool simplifiable(Term const &);
+        void orderVariable();
         vector<char> getVar() const;
         vector<int> getPower() const;
         Term simplify(Term const &);
