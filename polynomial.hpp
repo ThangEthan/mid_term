@@ -29,6 +29,7 @@ class Polynomial
         Polynomial(string name);
         Polynomial(vector<Term> ts);
         int evaluate();
+        Polynomial simplify();
     friend Polynomial operator * (Polynomial const &, Polynomial const &);
     friend ostream& operator << (ostream& os, const Polynomial &f);
 };

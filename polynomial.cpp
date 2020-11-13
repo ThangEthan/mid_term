@@ -81,7 +81,7 @@ Polynomial::Polynomial(string name)
                 break;
             }
         }
-        else if (c == '`') //delete
+        else if (c == ']') //delete
         {
             f.pop_back();
             f_r.pop_back();
@@ -137,9 +137,7 @@ Polynomial::Polynomial(vector<Term> ts)
 Polynomial operator*(Polynomial const &f1, Polynomial const &f2)
 {
     vector<Term> new_terms;
-    vector<Term> new_simplifiedd_terms;
-    vector<int> index;
-    Term temp;
+
     for (size_t i = 0; i < f1.terms.size(); i++)
     {
         for (size_t j = 0; j < f2.terms.size(); j++)
@@ -147,7 +145,16 @@ Polynomial operator*(Polynomial const &f1, Polynomial const &f2)
             new_terms.push_back(f1.terms[i] * f2.terms[j]);
         }
     }
-    for (size_t i = 0; i < new_terms.size(); i++)
+    return Polynomial(new_terms).simplify();
+}
+
+Polynomial Polynomial::simplify()
+{
+    vector<Term> new_simplifiedd_terms;
+    vector<int> index;
+    Term temp;
+
+    for (size_t i = 0; i < this->terms.size(); i++)
     {
         if (find(index.begin(), index.end(), i) != index.end())
         {
@@ -155,14 +162,14 @@ Polynomial operator*(Polynomial const &f1, Polynomial const &f2)
         }
         else
         {
-            temp = new_terms[i];
+            temp = this->terms[i];
         }
-        for (size_t j = i + 1; j < new_terms.size(); j++)
+        for (size_t j = i + 1; j < this->terms.size(); j++)
         {
-            if (new_terms[i].simplifiable(new_terms[j]))
+            if (this->terms[i].simplifiable(this->terms[j]))
             {
                 index.push_back(j);
-                temp = temp.simplify(new_terms[j]);
+                temp = temp.simplify(this->terms[j]);
             }
         }
         if (temp.getConstant() != 0)
@@ -294,5 +301,6 @@ int Polynomial::evaluate()
     {
         result += this->terms[i].evaluate(vars, varVals); //pass it to each term
     }
+    cout << "Result: ";
     return result;
 }
