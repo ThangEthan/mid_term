@@ -1,7 +1,7 @@
 <h2>POLYNOMIAL CALCULATOR</h2>
 
 ## Requirement
-OS: Linux
+OS: Linux.
 This program only runs in Linux.
 
 Additional packages: cowsay.
