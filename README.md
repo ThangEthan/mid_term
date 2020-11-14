@@ -1,6 +1,6 @@
 <h2>POLYNOMIAL CALCULATOR</h2>
 
-##Requirement
+## Requirement
 OS: Linux
 This program only runs in Linux.
 
